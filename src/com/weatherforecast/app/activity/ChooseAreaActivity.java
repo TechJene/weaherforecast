@@ -66,12 +66,27 @@ public class ChooseAreaActivity extends Activity {
 	 */
 	private int currentLevel;
 
+	/**
+	 * 是否从WeatherActivity跳转过来。
+	 */
+	private boolean isFromWeatherActivity;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
+		
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
+		/*
+		 * 已经选择了城市且不是从WeatherActivity跳转过来的才会直接转到WeatherActivity。
+		 */
+		if (prefs.getBoolean("city_selected", false)&&!isFromWeatherActivity) {
+			Intent intent = new Intent(this, WeatherActivity.class);
+			startActivity(intent);
+			finish();
+			return;
+		}
 		if (prefs.getBoolean("city_selected", false)) {
 			Intent intent = new Intent(this, WeatherActivity.class);
 			startActivity(intent);
@@ -90,8 +105,8 @@ public class ChooseAreaActivity extends Activity {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int index, long id) {
+			public void onItemClick(AdapterView<?> arg0, View view,
+					int index, long arg3) {
 				if (currentLevel == LEVEL_PROVINCE) {
 					selectedProvince = provinceList.get(index);
 					queryCities();
@@ -268,8 +283,12 @@ public class ChooseAreaActivity extends Activity {
 		} else if (currentLevel == LEVEL_CITY) {
 			queryProvinces();
 		} else {
+			if (isFromWeatherActivity) {
+				Intent intent = new Intent(this, WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
 		}
 	}
-
+	
 }
