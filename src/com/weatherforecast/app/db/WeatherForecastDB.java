@@ -85,6 +85,7 @@ public class WeatherForecastDB {
 			ContentValues values = new ContentValues();
 			values.put("city_name", city.getCityName());
 			values.put("city_code", city.getCityCode());
+			values.put("province_id", city.getProvinceId());
 			db.insert("City", null, values);
 		}
 	}
@@ -104,6 +105,7 @@ public class WeatherForecastDB {
 						.getColumnIndex("city_name")));
 				city.setCityCode(cursor.getString(cursor
 						.getColumnIndex("city_code")));
+				city.setProvinceId(provinceId);
 				list.add(city);
 			} while (cursor.moveToNext());
 		}
@@ -112,11 +114,12 @@ public class WeatherForecastDB {
 	/**
 	 * 将County实例存储到数据库
 	 */
-	public void saveCity(County county) {
+	public void saveCounty(County county) {
 		if (county != null) {
 			ContentValues values = new ContentValues();
 			values.put("county_name", county.getCountyName());
 			values.put("county_code", county.getCountyCode());
+			values.put("city_id", county.getCityId());
 			db.insert("County", null, values);
 		}
 	}
@@ -136,6 +139,7 @@ public class WeatherForecastDB {
 						.getColumnIndex("county_name")));
 				county.setCountyCode(cursor.getString(cursor
 						.getColumnIndex("county_code")));
+				county.setCityId(cityId);
 				list.add(county);
 			} while (cursor.moveToNext());
 		}
